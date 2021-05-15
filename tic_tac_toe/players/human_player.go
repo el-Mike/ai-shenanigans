@@ -5,21 +5,24 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+
+	"github.com/el-Mike/ai-shenanigans/tic_tac_toe/board"
+	"github.com/el-Mike/ai-shenanigans/tic_tac_toe/game"
 )
 
 type HumanPlayer struct {
-	sign  Sign
-	board Board
+	sign  game.Sign
+	board game.Board
 }
 
-func NewHumanPlayer(board Board, sign Sign) *HumanPlayer {
+func NewHumanPlayer(board game.Board, sign game.Sign) *HumanPlayer {
 	return &HumanPlayer{
 		sign:  sign,
 		board: board,
 	}
 }
 
-func (p *HumanPlayer) GetSign() Sign {
+func (p *HumanPlayer) GetSign() board.Sign {
 	return p.sign
 }
 

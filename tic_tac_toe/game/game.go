@@ -1,26 +1,31 @@
 package game
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/el-Mike/ai-shenanigans/tic_tac_toe/board"
+	"github.com/el-Mike/ai-shenanigans/tic_tac_toe/players"
+)
 
 type Game struct {
-	board        Board
+	board        board.Board
 	stateChecker *StateChecker
 }
 
-func (g *Game) renderBoard(currentSign Sign) {
-	fmt.Print(RENDER_SEPARATOR)
+func (g *Game) renderBoard(currentSign board.Sign) {
+	fmt.Print(board.RENDER_SEPARATOR)
 	fmt.Printf("Current sign: %v\n\n", currentSign)
 
 	for _, row := range g.board {
 		fmt.Print("    ")
 		for j, sign := range row {
 			if sign == "" {
-				fmt.Print(EMPTY_SIGN)
+				fmt.Print(board.EMPTY_SIGN)
 			} else {
 				fmt.Print(sign)
 			}
 
-			if j < (BOARD_SIZE - 1) {
+			if j < (board.BOARD_SIZE - 1) {
 				fmt.Print(" | ")
 			} else {
 				fmt.Print("\n")
@@ -28,10 +33,10 @@ func (g *Game) renderBoard(currentSign Sign) {
 		}
 	}
 
-	fmt.Print(RENDER_SEPARATOR)
+	fmt.Print(board.RENDER_SEPARATOR)
 }
 
-func (g *Game) Move(cell int, sign Sign) {
+func (g *Game) Move(cell int, sign board.Sign) {
 	g.board.PutSignByGridCell(cell, sign)
 }
 
@@ -39,10 +44,10 @@ func (g *Game) Move(cell int, sign Sign) {
 // 1. Add randomness to MinMax.
 // 2. Add alpha-beta pruning.
 func (g *Game) Start() {
-	player := NewHumanPlayer(g.board, X_SIGN)
-	cpuPlayer := NewCPUPlayer(g.board, O_SIGN)
+	player := players.NewHumanPlayer(g.board, board.X_SIGN)
+	cpuPlayer := players.NewCPUPlayer(g.board, board.O_SIGN)
 
-	var currentPlayer Player
+	var currentPlayer players.Player
 	currentPlayer = player
 
 	currentSign := currentPlayer.GetSign()
@@ -64,7 +69,7 @@ func (g *Game) Start() {
 			break
 		}
 
-		if _, ok := currentPlayer.(*HumanPlayer); ok {
+		if _, ok := currentPlayer.(*players.HumanPlayer); ok {
 			currentPlayer = cpuPlayer
 			currentSign = currentPlayer.GetSign()
 		} else {
