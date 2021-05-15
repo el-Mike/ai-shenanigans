@@ -4,7 +4,6 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/el-Mike/ai-shenanigans/tic_tac_toe/board"
 	"github.com/el-Mike/ai-shenanigans/tic_tac_toe/game"
 )
 
@@ -19,13 +18,13 @@ type ResultPair struct {
 type ResultCache map[string]ResultPair
 
 type CPUPlayer struct {
-	sign         board.Sign
-	board        board.Board
+	sign         game.Sign
+	board        game.Board
 	cache        ResultCache
 	stateChecker *game.StateChecker
 }
 
-func NewCPUPlayer(board board.Board, sign board.Sign) *CPUPlayer {
+func NewCPUPlayer(board game.Board, sign game.Sign) *CPUPlayer {
 	return &CPUPlayer{
 		sign:         sign,
 		board:        board,
@@ -34,7 +33,7 @@ func NewCPUPlayer(board board.Board, sign board.Sign) *CPUPlayer {
 	}
 }
 
-func (cp *CPUPlayer) GetSign() board.Sign {
+func (cp *CPUPlayer) GetSign() game.Sign {
 	return cp.sign
 }
 
@@ -46,7 +45,7 @@ func (cp *CPUPlayer) Move() {
 	cp.board.PutSignByGridCell(cell, cp.sign)
 }
 
-func (cp *CPUPlayer) minmax(board board.Board, isMaximizer bool) (result int, move int) {
+func (cp *CPUPlayer) minmax(board game.Board, isMaximizer bool) (result int, move int) {
 	hash := board.GetBoardHash()
 
 	if cached, ok := cp.cache[hash]; ok {
@@ -66,14 +65,14 @@ func (cp *CPUPlayer) minmax(board board.Board, isMaximizer bool) (result int, mo
 	result, move = DRAW_VALUE, -1
 
 	var targetResult int
-	var currentSign board.Sign
+	var currentSign game.Sign
 
 	if isMaximizer {
 		targetResult = WIN_VALUE
 		currentSign = cp.sign
 	} else {
 		targetResult = LOSS_VALUE
-		currentSign = board.X_SIGN
+		currentSign = game.X_SIGN
 	}
 
 	availableCells := board.GetEmptyCells()

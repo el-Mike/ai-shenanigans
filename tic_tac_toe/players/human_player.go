@@ -6,7 +6,6 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/el-Mike/ai-shenanigans/tic_tac_toe/board"
 	"github.com/el-Mike/ai-shenanigans/tic_tac_toe/game"
 )
 
@@ -22,7 +21,7 @@ func NewHumanPlayer(board game.Board, sign game.Sign) *HumanPlayer {
 	}
 }
 
-func (p *HumanPlayer) GetSign() board.Sign {
+func (p *HumanPlayer) GetSign() game.Sign {
 	return p.sign
 }
 
