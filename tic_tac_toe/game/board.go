@@ -4,8 +4,6 @@ import "fmt"
 
 const BOARD_SIZE = 3
 
-const RENDER_SEPARATOR = "\n================\n"
-
 type Sign string
 
 const (

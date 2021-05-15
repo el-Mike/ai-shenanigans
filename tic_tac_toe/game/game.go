@@ -7,37 +7,15 @@ import (
 type Game struct {
 	board        Board
 	stateChecker *StateChecker
+	renderer     Renderer
 }
 
-func NewGame(board Board, stateChecker *StateChecker) *Game {
+func NewGame(board Board, stateChecker *StateChecker, renderer Renderer) *Game {
 	return &Game{
 		board:        board,
 		stateChecker: stateChecker,
+		renderer:     renderer,
 	}
-}
-
-func (g *Game) renderBoard(currentSign Sign) {
-	fmt.Print(RENDER_SEPARATOR)
-	fmt.Printf("Current sign: %v\n\n", currentSign)
-
-	for _, row := range g.board {
-		fmt.Print("    ")
-		for j, sign := range row {
-			if sign == "" {
-				fmt.Print(EMPTY_SIGN)
-			} else {
-				fmt.Print(sign)
-			}
-
-			if j < (BOARD_SIZE - 1) {
-				fmt.Print(" | ")
-			} else {
-				fmt.Print("\n")
-			}
-		}
-	}
-
-	fmt.Print(RENDER_SEPARATOR)
 }
 
 func (g *Game) Move(cell int, sign Sign) {
@@ -53,12 +31,12 @@ func (g *Game) Start(playerOne, playerTwo Player) {
 
 	currentSign := currentPlayer.GetSign()
 
-	g.renderBoard(currentSign)
+	g.renderer.Render(g.board, currentSign)
 
 	for {
 		currentPlayer.Move()
 
-		g.renderBoard(currentSign)
+		g.renderer.Render(g.board, currentSign)
 
 		if g.stateChecker.IsWon(g.board, currentSign) {
 			fmt.Printf("%v won!\n", currentSign)
