@@ -12,7 +12,7 @@ func main() {
 	g := game.NewGame(board, stateChecker)
 
 	playerOne := players.NewHumanPlayer(board, game.X_SIGN)
-	playerTwo := players.NewCPUPlayer(board, game.O_SIGN)
+	playerTwo := players.NewMinmaxPlayer(board, game.O_SIGN)
 
 	g.Start(playerOne, playerTwo)
 }

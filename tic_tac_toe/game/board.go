@@ -122,3 +122,15 @@ func (b Board) GetBoardHash() string {
 
 	return hash
 }
+
+func (b Board) GetFirstEmpty() int {
+	cell := 0
+
+	b.forEvery(func(row, col int) {
+		if cell == 0 && b.IsEmpty(row, col) {
+			cell = b.CoordsToCell(row, col)
+		}
+	})
+
+	return cell
+}

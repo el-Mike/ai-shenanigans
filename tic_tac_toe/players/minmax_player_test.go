@@ -8,7 +8,7 @@ import (
 
 func BenchmarkMinMax(b *testing.B) {
 	board := game.NewBoard()
-	cpu := NewCPUPlayer(board, game.O_SIGN)
+	cpu := NewMinmaxPlayer(board, game.O_SIGN)
 
 	for i := 0; i < b.N; i++ {
 		cpu.minmax(board, true)

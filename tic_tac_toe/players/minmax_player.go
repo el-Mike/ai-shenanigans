@@ -1,9 +1,6 @@
 package players
 
 import (
-	"math/rand"
-	"time"
-
 	"github.com/el-Mike/ai-shenanigans/tic_tac_toe/game"
 )
 
@@ -17,15 +14,15 @@ type ResultPair struct {
 
 type ResultCache map[string]ResultPair
 
-type CPUPlayer struct {
+type MinmaxPlayer struct {
 	sign         game.Sign
 	board        game.Board
 	cache        ResultCache
 	stateChecker *game.StateChecker
 }
 
-func NewCPUPlayer(board game.Board, sign game.Sign) *CPUPlayer {
-	return &CPUPlayer{
+func NewMinmaxPlayer(board game.Board, sign game.Sign) *MinmaxPlayer {
+	return &MinmaxPlayer{
 		sign:         sign,
 		board:        board,
 		cache:        ResultCache{},
@@ -33,11 +30,11 @@ func NewCPUPlayer(board game.Board, sign game.Sign) *CPUPlayer {
 	}
 }
 
-func (cp *CPUPlayer) GetSign() game.Sign {
+func (cp *MinmaxPlayer) GetSign() game.Sign {
 	return cp.sign
 }
 
-func (cp *CPUPlayer) Move() {
+func (cp *MinmaxPlayer) Move() {
 	board := cp.board.GetCopy()
 
 	_, cell := cp.minmax(board, true)
@@ -45,7 +42,7 @@ func (cp *CPUPlayer) Move() {
 	cp.board.PutSignByGridCell(cell, cp.sign)
 }
 
-func (cp *CPUPlayer) minmax(board game.Board, isMaximizer bool) (result int, move int) {
+func (cp *MinmaxPlayer) minmax(board game.Board, isMaximizer bool) (result int, move int) {
 	hash := board.GetBoardHash()
 
 	if cached, ok := cp.cache[hash]; ok {
@@ -101,23 +98,4 @@ func (cp *CPUPlayer) minmax(board game.Board, isMaximizer bool) (result int, mov
 	}
 
 	return result, move
-}
-
-func (cp *CPUPlayer) RandomMove() {
-	rand.Seed(time.Now().UnixNano())
-
-	min := 1
-	max := 9
-
-	var cell int
-
-	for {
-		cell = rand.Intn(max-min*1) + min
-
-		if cp.board.IsEmptyByGridCell(cell) {
-			break
-		}
-	}
-
-	cp.board.PutSignByGridCell(cell, cp.sign)
 }
