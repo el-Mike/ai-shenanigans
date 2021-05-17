@@ -8,6 +8,14 @@ const WIN_VALUE = 1
 const DRAW_VALUE = 0
 const LOSS_VALUE = -1
 
+const NOOP_ACTION = -1
+
+// Initials to Alpha and Beta need to be the worst cases for bot max and min
+// players, respectively - therefore for maximizing player tends to -Infinity, and for
+// minimalizing player - to Infinity.
+const INITIAL_ALPHA = -2
+const INITIAL_BETA = 2
+
 type ResultPair struct {
 	result, move int
 }
@@ -16,12 +24,13 @@ type ResultCache map[string]ResultPair
 
 type MinmaxPlayer struct {
 	sign         game.Sign
+	opponentSign game.Sign
 	board        game.Board
 	cache        ResultCache
 	stateChecker *game.StateChecker
 }
 
-func NewMinmaxPlayer(board game.Board, sign game.Sign) *MinmaxPlayer {
+func NewMinmaxPlayer(board game.Board, sign game.Sign, opponentSign game.Sign) *MinmaxPlayer {
 	return &MinmaxPlayer{
 		sign:         sign,
 		board:        board,
@@ -37,12 +46,12 @@ func (cp *MinmaxPlayer) GetSign() game.Sign {
 func (cp *MinmaxPlayer) Move() {
 	board := cp.board.GetCopy()
 
-	_, cell := cp.minmax(board, true)
+	_, cell := cp.minmax(board, true, INITIAL_ALPHA, INITIAL_BETA)
 
 	cp.board.PutSignByGridCell(cell, cp.sign)
 }
 
-func (cp *MinmaxPlayer) minmax(board game.Board, isMaximizer bool) (result int, move int) {
+func (cp *MinmaxPlayer) minmax(board game.Board, isMaximizer bool, alpha int, beta int) (result int, move int) {
 	hash := board.GetBoardHash()
 
 	if cached, ok := cp.cache[hash]; ok {
@@ -51,15 +60,15 @@ func (cp *MinmaxPlayer) minmax(board game.Board, isMaximizer bool) (result int, 
 
 	gameState := cp.stateChecker.CheckState(board)
 
-	if gameState == game.O_WON {
-		return WIN_VALUE, -1
+	if gameState == cp.stateChecker.GetWinStateBySign(cp.sign) {
+		return WIN_VALUE, NOOP_ACTION
 	}
 
-	if gameState == game.X_WON {
-		return LOSS_VALUE, -1
+	if gameState == cp.stateChecker.GetWinStateBySign(cp.opponentSign) {
+		return LOSS_VALUE, NOOP_ACTION
 	}
 
-	result, move = DRAW_VALUE, -1
+	result, move = DRAW_VALUE, NOOP_ACTION
 
 	var targetResult int
 	var currentSign game.Sign
@@ -69,7 +78,7 @@ func (cp *MinmaxPlayer) minmax(board game.Board, isMaximizer bool) (result int, 
 		currentSign = cp.sign
 	} else {
 		targetResult = LOSS_VALUE
-		currentSign = game.X_SIGN
+		currentSign = cp.opponentSign
 	}
 
 	availableCells := board.GetEmptyCells()
@@ -80,11 +89,17 @@ func (cp *MinmaxPlayer) minmax(board game.Board, isMaximizer bool) (result int, 
 		newBoard := board.GetCopy()
 		newBoard.PutSignByGridCell(targetCell, currentSign)
 
-		currentResult, _ := cp.minmax(newBoard, !isMaximizer)
+		currentResult, _ := cp.minmax(newBoard, !isMaximizer, alpha, beta)
+
+		if isMaximizer {
+			alpha = currentResult
+		} else {
+			beta = currentResult
+		}
 
 		if (isMaximizer && (currentResult > result)) ||
 			(!isMaximizer && (currentResult < result)) ||
-			move == -1 {
+			move == NOOP_ACTION {
 			result, move = currentResult, targetCell
 		}
 

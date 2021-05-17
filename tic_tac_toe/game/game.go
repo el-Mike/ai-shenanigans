@@ -18,10 +18,6 @@ func NewGame(board Board, stateChecker *StateChecker, renderer Renderer) *Game {
 	}
 }
 
-func (g *Game) Move(cell int, sign Sign) {
-	g.board.PutSignByGridCell(cell, sign)
-}
-
 // @TODO:
 // 1. Add randomness to MinMax.
 // 2. Add alpha-beta pruning.
