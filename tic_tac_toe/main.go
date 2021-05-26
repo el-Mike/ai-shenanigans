@@ -14,7 +14,7 @@ func main() {
 	g := game.NewGame(board, stateChecker, renderer)
 
 	playerOne := players.NewHumanPlayer(board, game.X_SIGN)
-	playerTwo := players.NewMinmaxPlayer(board, game.O_SIGN, game.X_SIGN)
+	playerTwo := players.NewMinmaxPlayer(board, game.O_SIGN, playerOne.GetSign())
 
 	g.Start(playerOne, playerTwo)
 }
