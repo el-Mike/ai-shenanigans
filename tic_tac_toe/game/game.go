@@ -20,7 +20,6 @@ func NewGame(board Board, stateChecker *StateChecker, renderer Renderer) *Game {
 
 // @TODO:
 // 1. Add randomness to MinMax.
-// 2. Add alpha-beta pruning.
 func (g *Game) Start(playerOne, playerTwo Player) {
 	var currentPlayer Player
 	currentPlayer = playerOne

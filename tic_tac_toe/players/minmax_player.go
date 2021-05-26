@@ -92,16 +92,20 @@ func (cp *MinmaxPlayer) minmax(board game.Board, isMaximizer bool, alpha int, be
 
 		currentResult, _ := cp.minmax(newBoard, !isMaximizer, alpha, beta)
 
-		if isMaximizer {
-			alpha = currentResult
-		} else {
-			beta = currentResult
-		}
-
 		if (isMaximizer && (currentResult > result)) ||
 			(!isMaximizer && (currentResult < result)) ||
 			move == NOOP_ACTION {
 			result, move = currentResult, targetCell
+		}
+
+		if isMaximizer && result > alpha {
+			alpha = currentResult
+		} else if !isMaximizer && result < beta {
+			beta = currentResult
+		}
+
+		if beta <= alpha {
+			break
 		}
 
 		if result == targetResult {
