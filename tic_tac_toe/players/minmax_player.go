@@ -33,6 +33,7 @@ type MinmaxPlayer struct {
 func NewMinmaxPlayer(board game.Board, sign game.Sign, opponentSign game.Sign) *MinmaxPlayer {
 	return &MinmaxPlayer{
 		sign:         sign,
+		opponentSign: opponentSign,
 		board:        board,
 		cache:        ResultCache{},
 		stateChecker: game.NewStateChecker(),
